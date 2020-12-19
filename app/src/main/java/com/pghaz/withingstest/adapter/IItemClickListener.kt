@@ -1,6 +1,8 @@
 package com.pghaz.withingstest.adapter
 
+import com.pghaz.withingstest.viewmodel.ImageViewModel
+
 interface IItemClickListener {
 
-    fun onImageClickedListener(position: Int)
+    fun onImageClickedListener(imageViewModel: ImageViewModel, position: Int)
 }

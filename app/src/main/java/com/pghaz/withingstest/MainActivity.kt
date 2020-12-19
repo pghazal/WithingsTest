@@ -1,6 +1,7 @@
 package com.pghaz.withingstest
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -11,7 +12,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.pghaz.withingstest.adapter.IItemClickListener
 import com.pghaz.withingstest.adapter.ImageAdapter
 import com.pghaz.withingstest.databinding.ActivityMainBinding
+import com.pghaz.withingstest.utils.Arguments
 import com.pghaz.withingstest.viewmodel.ISearchView
+import com.pghaz.withingstest.viewmodel.ImageViewModel
 import com.pghaz.withingstest.viewmodel.SearchViewModel
 
 class MainActivity : AppCompatActivity(), ISearchView, IItemClickListener {
@@ -61,7 +64,12 @@ class MainActivity : AppCompatActivity(), ISearchView, IItemClickListener {
     private fun configureValidationButton(viewBinding: ActivityMainBinding) {
         validationButton = viewBinding.validationButton
         validationButton.setOnClickListener {
-            // TODO
+            val selectedIds = imageAdapter.getSelectedIds()
+
+            val intent = Intent(this, SelectedImagesActivity::class.java)
+            intent.putExtra(Arguments.ARGS_IMAGE_IDS_SELECTED, selectedIds.toLongArray())
+
+            startActivity(intent)
         }
     }
 
@@ -100,8 +108,8 @@ class MainActivity : AppCompatActivity(), ISearchView, IItemClickListener {
         searchViewModel.clearSearch()
     }
 
-    override fun onImageClickedListener(position: Int) {
-        imageAdapter.toggleSelection(position)
+    override fun onImageClickedListener(imageViewModel: ImageViewModel, position: Int) {
+        imageAdapter.toggleSelection(imageViewModel, position)
 
         // At least 2 selected items
         if (imageAdapter.getSelectedItemCount() > 1) {

@@ -16,7 +16,7 @@ class ImageViewHolder(itemView: View, private var listener: IItemClickListener) 
 
     fun bind(imageViewModel: ImageViewModel, selected: Boolean) {
         itemView.setOnClickListener {
-            listener.onImageClickedListener(adapterPosition)
+            listener.onImageClickedListener(imageViewModel, adapterPosition)
         }
 
         ImageLoader.get().load(imageViewModel.imageUrl)

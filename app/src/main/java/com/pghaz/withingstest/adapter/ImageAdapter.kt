@@ -1,10 +1,11 @@
 package com.pghaz.withingstest.adapter
 
-import android.util.SparseBooleanArray
+import android.util.SparseLongArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.util.contains
+import androidx.core.util.forEach
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.pghaz.withingstest.R
@@ -13,7 +14,7 @@ import com.pghaz.withingstest.viewmodel.ImageViewModel
 class ImageAdapter(private var listener: IItemClickListener) :
     ListAdapter<ImageViewModel, ImageViewHolder>(DiffUtilCallback) {
 
-    private val selectedItems = SparseBooleanArray()
+    private val selectedIds = SparseLongArray()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -28,21 +29,31 @@ class ImageAdapter(private var listener: IItemClickListener) :
     }
 
     private fun isSelected(position: Int): Boolean {
-        return selectedItems.contains(position)
+        return selectedIds.contains(position)
     }
 
-    fun toggleSelection(position: Int) {
-        if (selectedItems[position, false]) {
-            selectedItems.delete(position)
+    fun toggleSelection(imageViewModel: ImageViewModel, position: Int) {
+        if (selectedIds[position] != 0L) {
+            selectedIds.delete(position)
         } else {
-            selectedItems.put(position, true)
+            selectedIds.put(position, imageViewModel.id)
         }
 
         notifyItemChanged(position)
     }
 
     fun getSelectedItemCount(): Int {
-        return selectedItems.size()
+        return selectedIds.size()
+    }
+
+    fun getSelectedIds(): List<Long> {
+        val items: MutableList<Long> = ArrayList(selectedIds.size())
+
+        selectedIds.forEach { key, value ->
+            items.add(value)
+        }
+
+        return items
     }
 
     companion object {
