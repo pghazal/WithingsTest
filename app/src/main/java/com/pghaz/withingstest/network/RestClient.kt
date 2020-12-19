@@ -10,7 +10,7 @@ import java.io.IOException
 
 object RestClient {
 
-    private const val PIXABAY_URL_API = "https://pixabay.com/api"
+    private const val PIXABAY_URL_API = "https://pixabay.com/"
     private const val PIXABAY_API_KEY = "5511001-7691b591d9508e60ec89b63c4"
 
     fun createPixabayServiceClient(): PixabayService {
@@ -33,15 +33,16 @@ object RestClient {
 
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response {
-            val request = chain.request()
+            val original = chain.request()
+            val originalHttpUrl = original.url()
 
-            if (apiKey != null) {
-                val authRequest = request.newBuilder()
-                    .addHeader("key", apiKey)
-                    .build()
-
-                return chain.proceed(authRequest)
-            }
+            // Add key header to all API call
+            val url = originalHttpUrl.newBuilder()
+                .addQueryParameter("key", apiKey)
+                .build()
+            val requestBuilder = original.newBuilder()
+                .url(url)
+            val request = requestBuilder.build()
 
             return chain.proceed(request)
         }
