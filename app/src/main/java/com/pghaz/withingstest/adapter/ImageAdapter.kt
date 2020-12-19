@@ -41,6 +41,10 @@ class ImageAdapter(private var listener: IItemClickListener) :
         notifyItemChanged(position)
     }
 
+    fun getSelectedItemCount(): Int {
+        return selectedItems.size()
+    }
+
     companion object {
         private val DiffUtilCallback = object : DiffUtil.ItemCallback<ImageViewModel>() {
             override fun areItemsTheSame(

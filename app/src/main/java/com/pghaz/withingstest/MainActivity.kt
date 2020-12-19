@@ -2,10 +2,12 @@ package com.pghaz.withingstest
 
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.pghaz.withingstest.adapter.IItemClickListener
 import com.pghaz.withingstest.adapter.ImageAdapter
 import com.pghaz.withingstest.databinding.ActivityMainBinding
@@ -19,6 +21,8 @@ class MainActivity : AppCompatActivity(), ISearchView, IItemClickListener {
 
     private lateinit var searchViewModel: SearchViewModel
 
+    private lateinit var validationButton: FloatingActionButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -28,9 +32,14 @@ class MainActivity : AppCompatActivity(), ISearchView, IItemClickListener {
 
         initViewModel()
 
+        configureViews(viewBinding)
+    }
+
+    private fun configureViews(viewBinding: ActivityMainBinding) {
         imageAdapter = initImageAdapter()
         configureRecyclerView(this, viewBinding, imageAdapter)
         configureSearchView(viewBinding)
+        configureValidationButton(viewBinding)
     }
 
     private fun initViewModel() {
@@ -47,6 +56,13 @@ class MainActivity : AppCompatActivity(), ISearchView, IItemClickListener {
     private fun configureRecyclerView(context: Context, viewBinding: ActivityMainBinding, imageAdapter: ImageAdapter) {
         viewBinding.recyclerView.layoutManager = LinearLayoutManager(context)
         viewBinding.recyclerView.adapter = imageAdapter
+    }
+
+    private fun configureValidationButton(viewBinding: ActivityMainBinding) {
+        validationButton = viewBinding.validationButton
+        validationButton.setOnClickListener {
+            // TODO
+        }
     }
 
     private fun configureSearchView(viewBinding: ActivityMainBinding) {
@@ -86,5 +102,12 @@ class MainActivity : AppCompatActivity(), ISearchView, IItemClickListener {
 
     override fun onImageClickedListener(position: Int) {
         imageAdapter.toggleSelection(position)
+
+        // At least 2 selected items
+        if (imageAdapter.getSelectedItemCount() > 1) {
+            validationButton.visibility = View.VISIBLE
+        } else {
+            validationButton.visibility = View.GONE
+        }
     }
 }
