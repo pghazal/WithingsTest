@@ -13,14 +13,14 @@ object RestClient {
     private const val PIXABAY_URL_API = "https://pixabay.com/api"
     private const val PIXABAY_API_KEY = "5511001-7691b591d9508e60ec89b63c4"
 
-    fun createImageServiceClient(): ImageService {
+    fun createPixabayServiceClient(): PixabayService {
         val retrofit = Retrofit.Builder()
             .client(createHttpClient(PIXABAY_API_KEY))
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(PIXABAY_URL_API)
             .build()
 
-        return retrofit.create(ImageService::class.java)
+        return retrofit.create(PixabayService::class.java)
     }
 
     private fun createHttpClient(apiKey: String): OkHttpClient {
