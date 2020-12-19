@@ -9,7 +9,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ImageViewModel : ViewModel() {
+class SearchViewModel : ViewModel() {
 
     private val pixabayService = RestClient.createPixabayServiceClient()
 

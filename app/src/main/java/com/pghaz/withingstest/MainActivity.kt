@@ -7,14 +7,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pghaz.withingstest.adapter.ImageAdapter
 import com.pghaz.withingstest.databinding.ActivityMainBinding
-import com.pghaz.withingstest.viewmodel.ImageViewModel
+import com.pghaz.withingstest.viewmodel.SearchViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var imageAdapter: ImageAdapter
 
-    private lateinit var imageViewModel: ImageViewModel
+    private lateinit var searchViewModel: SearchViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +29,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() {
-        imageViewModel = ViewModelProvider(this).get(ImageViewModel::class.java)
-        imageViewModel.hitsLiveData.observe(this, { hits ->
+        searchViewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
+        searchViewModel.hitsLiveData.observe(this, { hits ->
             imageAdapter.submitList(hits)
         })
     }
@@ -48,6 +48,6 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
 
         // TODO: test -> remove when search view is working
-        imageViewModel.searchImages("yellow flowers")
+        searchViewModel.searchImages("yellow flowers")
     }
 }
