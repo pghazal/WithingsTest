@@ -51,13 +51,15 @@ class SearchViewModel : ViewModel() {
 
     private fun getImageUrlToLoad(hit: Hit): String? {
         return when {
-            hit.previewURL.isNotEmpty() -> {
-                hit.previewURL
+            hit.webformatURL.isNotEmpty() -> {
+                hit.webformatURL
             }
             hit.imageURL.isNotEmpty() -> {
                 hit.imageURL
             }
-            /* else if other case like fullHD, etc... */
+            hit.previewURL.isNotEmpty() -> {
+                hit.previewURL
+            }
             else -> {
                 null
             }
