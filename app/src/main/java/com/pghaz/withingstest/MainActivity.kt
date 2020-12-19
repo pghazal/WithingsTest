@@ -3,13 +3,15 @@ package com.pghaz.withingstest
 import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pghaz.withingstest.adapter.ImageAdapter
 import com.pghaz.withingstest.databinding.ActivityMainBinding
+import com.pghaz.withingstest.viewmodel.ISearchView
 import com.pghaz.withingstest.viewmodel.SearchViewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ISearchView {
 
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var imageAdapter: ImageAdapter
@@ -24,8 +26,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(root)
 
         initViewModel()
+
         imageAdapter = initImageAdapter()
         configureRecyclerView(this, viewBinding, imageAdapter)
+        configureSearchView(viewBinding)
     }
 
     private fun initViewModel() {
@@ -44,10 +48,38 @@ class MainActivity : AppCompatActivity() {
         viewBinding.recyclerView.adapter = imageAdapter
     }
 
-    override fun onStart() {
-        super.onStart()
+    private fun configureSearchView(viewBinding: ActivityMainBinding) {
+        val searchView = viewBinding.searchView
 
-        // TODO: test -> remove when search view is working
-        searchViewModel.searchImages("yellow flowers")
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                searchView.clearFocus()
+
+                if (query.isEmpty()) {
+                    clearSearch()
+                } else {
+                    searchImages(query)
+                }
+
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Is it intuitive to remove result from list when text is cleared..?
+                if (newText.isNullOrEmpty()) {
+                    clearSearch()
+                }
+
+                return false
+            }
+        })
+    }
+
+    override fun searchImages(query: String?) {
+        searchViewModel.searchImages(query)
+    }
+
+    override fun clearSearch() {
+        searchViewModel.clearSearch()
     }
 }

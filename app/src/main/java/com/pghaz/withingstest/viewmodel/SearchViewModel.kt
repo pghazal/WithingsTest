@@ -65,4 +65,8 @@ class SearchViewModel : ViewModel() {
             }
         }
     }
+
+    fun clearSearch() {
+        hitsLiveData.value = emptyList()
+    }
 }
