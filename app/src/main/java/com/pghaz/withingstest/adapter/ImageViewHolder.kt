@@ -1,6 +1,5 @@
 package com.pghaz.withingstest.adapter
 
-import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +11,8 @@ class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val imageView = itemView.findViewById<ImageView>(R.id.imageView)
 
     fun bind(hit: Hit) {
-        val uri = Uri.parse(hit.imageURL)
-        imageView.setImageURI(uri)
+        // TODO: fix image loading
+        /*val uri = Uri.parse(hit.imageURL)
+        imageView.setImageURI(uri)*/
     }
 }
