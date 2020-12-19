@@ -6,12 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.pghaz.withingstest.adapter.IItemClickListener
 import com.pghaz.withingstest.adapter.ImageAdapter
 import com.pghaz.withingstest.databinding.ActivityMainBinding
 import com.pghaz.withingstest.viewmodel.ISearchView
 import com.pghaz.withingstest.viewmodel.SearchViewModel
 
-class MainActivity : AppCompatActivity(), ISearchView {
+class MainActivity : AppCompatActivity(), ISearchView, IItemClickListener {
 
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var imageAdapter: ImageAdapter
@@ -40,7 +41,7 @@ class MainActivity : AppCompatActivity(), ISearchView {
     }
 
     private fun initImageAdapter(): ImageAdapter {
-        return ImageAdapter()
+        return ImageAdapter(this)
     }
 
     private fun configureRecyclerView(context: Context, viewBinding: ActivityMainBinding, imageAdapter: ImageAdapter) {
@@ -81,5 +82,9 @@ class MainActivity : AppCompatActivity(), ISearchView {
 
     override fun clearSearch() {
         searchViewModel.clearSearch()
+    }
+
+    override fun onImageClickedListener(position: Int) {
+        imageAdapter.toggleSelection(position)
     }
 }
