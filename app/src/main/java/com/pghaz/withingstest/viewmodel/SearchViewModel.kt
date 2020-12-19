@@ -13,7 +13,7 @@ class SearchViewModel : ViewModel() {
 
     private val pixabayService = RestClient.createPixabayServiceClient()
 
-    val hitsLiveData = MutableLiveData<List<Hit>>()
+    val hitsLiveData = MutableLiveData<List<ImageViewModel>>()
 
     fun searchImages(query: String?) {
         val call = pixabayService.searchImages(query)
@@ -21,8 +21,15 @@ class SearchViewModel : ViewModel() {
         call.enqueue(object : Callback<PixabayResult> {
             override fun onResponse(call: Call<PixabayResult>, response: Response<PixabayResult>) {
                 if (response.isSuccessful) {
-                    response.body()?.hits?.let {
-                        hitsLiveData.value = it
+                    response.body()?.hits?.let { hits ->
+                        val imageViewModels = ArrayList<ImageViewModel>()
+
+                        hits.forEach { hit ->
+                            val imageViewModel = transform(hit)
+                            imageViewModels.add(imageViewModel)
+                        }
+
+                        hitsLiveData.value = imageViewModels
                     }
                 } else {
                     // TODO: call onFailure()
@@ -33,5 +40,27 @@ class SearchViewModel : ViewModel() {
                 // TODO: handle error case
             }
         })
+    }
+
+    private fun transform(hit: Hit): ImageViewModel {
+        val id = hit.id
+        val imageUrl = getImageUrlToLoad(hit)
+
+        return ImageViewModel(id, imageUrl)
+    }
+
+    private fun getImageUrlToLoad(hit: Hit): String? {
+        return when {
+            hit.previewURL.isNotEmpty() -> {
+                hit.previewURL
+            }
+            hit.imageURL.isNotEmpty() -> {
+                hit.imageURL
+            }
+            /* else if other case like fullHD, etc... */
+            else -> {
+                null
+            }
+        }
     }
 }

@@ -3,7 +3,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Hit(
     @SerializedName("id")
-    val id: Int,
+    val id: Long,
     @SerializedName("pageURL")
     val pageURL: String,
     @SerializedName("type")

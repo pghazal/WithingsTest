@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.pghaz.withingstest.R
-import com.pghaz.withingstest.domain.Hit
+import com.pghaz.withingstest.viewmodel.ImageViewModel
 
-class ImageAdapter : ListAdapter<Hit, ImageViewHolder>(DiffUtilCallback) {
+class ImageAdapter : ListAdapter<ImageViewModel, ImageViewHolder>(DiffUtilCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -23,12 +23,18 @@ class ImageAdapter : ListAdapter<Hit, ImageViewHolder>(DiffUtilCallback) {
     }
 
     companion object {
-        private val DiffUtilCallback = object : DiffUtil.ItemCallback<Hit>() {
-            override fun areItemsTheSame(oldItem: Hit, newItem: Hit): Boolean {
+        private val DiffUtilCallback = object : DiffUtil.ItemCallback<ImageViewModel>() {
+            override fun areItemsTheSame(
+                oldItem: ImageViewModel,
+                newItem: ImageViewModel
+            ): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: Hit, newItem: Hit): Boolean {
+            override fun areContentsTheSame(
+                oldItem: ImageViewModel,
+                newItem: ImageViewModel
+            ): Boolean {
                 return oldItem == newItem
             }
         }
