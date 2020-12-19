@@ -49,7 +49,7 @@ class SearchViewModel : ViewModel() {
         return ImageViewModel(id, imageUrl)
     }
 
-    private fun getImageUrlToLoad(hit: Hit): String? {
+    private fun getImageUrlToLoad(hit: Hit): String {
         return when {
             hit.webformatURL.isNotEmpty() -> {
                 hit.webformatURL
@@ -61,7 +61,7 @@ class SearchViewModel : ViewModel() {
                 hit.previewURL
             }
             else -> {
-                null
+                ""
             }
         }
     }

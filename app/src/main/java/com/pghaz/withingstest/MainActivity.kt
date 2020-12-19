@@ -64,10 +64,10 @@ class MainActivity : AppCompatActivity(), ISearchView, IItemClickListener {
     private fun configureValidationButton(viewBinding: ActivityMainBinding) {
         validationButton = viewBinding.validationButton
         validationButton.setOnClickListener {
-            val selectedIds = imageAdapter.getSelectedIds()
+            val selectedUrls = imageAdapter.getSelectedItems()
 
             val intent = Intent(this, SelectedImagesActivity::class.java)
-            intent.putExtra(Arguments.ARGS_IMAGE_IDS_SELECTED, selectedIds.toLongArray())
+            intent.putExtra(Arguments.ARGS_IMAGE_URL_SELECTED, selectedUrls.toTypedArray())
 
             startActivity(intent)
         }

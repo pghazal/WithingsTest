@@ -1,11 +1,8 @@
 package com.pghaz.withingstest.adapter
 
-import android.util.SparseLongArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.util.contains
-import androidx.core.util.forEach
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.pghaz.withingstest.R
@@ -14,7 +11,7 @@ import com.pghaz.withingstest.viewmodel.ImageViewModel
 class ImageAdapter(private var listener: IItemClickListener) :
     ListAdapter<ImageViewModel, ImageViewHolder>(DiffUtilCallback) {
 
-    private val selectedIds = SparseLongArray()
+    private val selectedIds = HashMap<Int, String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -33,24 +30,24 @@ class ImageAdapter(private var listener: IItemClickListener) :
     }
 
     fun toggleSelection(imageViewModel: ImageViewModel, position: Int) {
-        if (selectedIds[position] != 0L) {
-            selectedIds.delete(position)
+        if (selectedIds.containsKey(position)) {
+            selectedIds.remove(position)
         } else {
-            selectedIds.put(position, imageViewModel.id)
+            selectedIds[position] = imageViewModel.imageUrl
         }
 
         notifyItemChanged(position)
     }
 
     fun getSelectedItemCount(): Int {
-        return selectedIds.size()
+        return selectedIds.size
     }
 
-    fun getSelectedIds(): List<Long> {
-        val items: MutableList<Long> = ArrayList(selectedIds.size())
+    fun getSelectedItems(): List<String> {
+        val items: MutableList<String> = ArrayList(selectedIds.size)
 
-        selectedIds.forEach { key, value ->
-            items.add(value)
+        selectedIds.forEach {
+            items.add(it.value)
         }
 
         return items
