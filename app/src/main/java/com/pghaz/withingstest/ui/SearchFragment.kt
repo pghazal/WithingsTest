@@ -1,4 +1,4 @@
-package com.pghaz.withingstest
+package com.pghaz.withingstest.ui
 
 import android.content.Intent
 import android.os.Bundle

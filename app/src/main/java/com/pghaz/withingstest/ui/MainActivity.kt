@@ -1,7 +1,8 @@
-package com.pghaz.withingstest
+package com.pghaz.withingstest.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.pghaz.withingstest.R
 
 class MainActivity : AppCompatActivity() {
 

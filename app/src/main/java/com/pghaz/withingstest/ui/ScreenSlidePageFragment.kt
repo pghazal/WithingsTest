@@ -1,4 +1,4 @@
-package com.pghaz.withingstest
+package com.pghaz.withingstest.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import com.pghaz.withingstest.R
 import com.pghaz.withingstest.domain.internal.ImageViewModel
 import com.pghaz.withingstest.imaging.ImageLoader
 import com.pghaz.withingstest.utils.Arguments

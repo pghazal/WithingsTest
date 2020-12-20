@@ -1,4 +1,4 @@
-package com.pghaz.withingstest
+package com.pghaz.withingstest.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.pghaz.withingstest.R
 import com.pghaz.withingstest.domain.internal.ImageViewModel
 import com.pghaz.withingstest.utils.Arguments
 
