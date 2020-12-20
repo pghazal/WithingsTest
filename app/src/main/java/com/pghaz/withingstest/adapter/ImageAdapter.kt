@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.pghaz.withingstest.R
-import com.pghaz.withingstest.viewmodel.ImageViewModel
+import com.pghaz.withingstest.domain.internal.ImageViewModel
 
 class ImageAdapter(private var listener: IItemClickListener) :
     ListAdapter<ImageViewModel, ImageViewHolder>(DiffUtilCallback) {
 
-    private val selectedIds = HashMap<Int, String>()
+    private val selectedItems = HashMap<Int, ImageViewModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -26,31 +26,36 @@ class ImageAdapter(private var listener: IItemClickListener) :
     }
 
     private fun isSelected(position: Int): Boolean {
-        return selectedIds.contains(position)
+        return selectedItems.contains(position)
     }
 
     fun toggleSelection(imageViewModel: ImageViewModel, position: Int) {
-        if (selectedIds.containsKey(position)) {
-            selectedIds.remove(position)
+        if (selectedItems.containsKey(position)) {
+            selectedItems.remove(position)
         } else {
-            selectedIds[position] = imageViewModel.imageUrl
+            selectedItems[position] = imageViewModel
         }
 
         notifyItemChanged(position)
     }
 
     fun getSelectedItemCount(): Int {
-        return selectedIds.size
+        return selectedItems.size
     }
 
-    fun getSelectedItems(): List<String> {
-        val items: MutableList<String> = ArrayList(selectedIds.size)
+    fun getSelectedItems(): ArrayList<ImageViewModel> {
+        val items: ArrayList<ImageViewModel> = ArrayList(selectedItems.size)
 
-        selectedIds.forEach {
+        selectedItems.forEach {
             items.add(it.value)
         }
 
         return items
+    }
+
+    fun clearSelection() {
+        selectedItems.clear()
+        notifyDataSetChanged()
     }
 
     companion object {

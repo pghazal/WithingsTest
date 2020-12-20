@@ -1,8 +1,10 @@
 package com.pghaz.withingstest.adapter
 
-import com.pghaz.withingstest.viewmodel.ImageViewModel
+import com.pghaz.withingstest.domain.internal.ImageViewModel
 
 interface IItemClickListener {
 
-    fun onImageClickedListener(imageViewModel: ImageViewModel, position: Int)
+    fun onItemClicked(imageViewModel: ImageViewModel, position: Int)
+
+    fun onItemLongClicked(imageViewModel: ImageViewModel, position: Int)
 }

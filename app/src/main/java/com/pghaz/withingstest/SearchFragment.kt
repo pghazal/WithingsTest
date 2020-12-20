@@ -2,9 +2,8 @@ package com.pghaz.withingstest
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -13,15 +12,18 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.pghaz.withingstest.adapter.IItemClickListener
 import com.pghaz.withingstest.adapter.ImageAdapter
 import com.pghaz.withingstest.databinding.FragmentSearchBinding
+import com.pghaz.withingstest.domain.internal.ImageViewModel
 import com.pghaz.withingstest.utils.Arguments
 import com.pghaz.withingstest.viewmodel.ISearchView
-import com.pghaz.withingstest.viewmodel.ImageViewModel
 import com.pghaz.withingstest.viewmodel.SearchViewModel
 
 class SearchFragment : Fragment(), ISearchView, IItemClickListener {
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
+
+    private val actionModeCallback: SelectionActionModeCallback = SelectionActionModeCallback()
+    private var actionMode: ActionMode? = null
 
     private lateinit var imageAdapter: ImageAdapter
     private lateinit var searchViewModel: SearchViewModel
@@ -85,7 +87,7 @@ class SearchFragment : Fragment(), ISearchView, IItemClickListener {
             val selectedUrls = imageAdapter.getSelectedItems()
 
             val intent = Intent(context, SelectedImagesActivity::class.java)
-            intent.putExtra(Arguments.ARGS_IMAGE_URL_SELECTED, selectedUrls.toTypedArray())
+            intent.putParcelableArrayListExtra(Arguments.ARGS_IMAGE_URL_SELECTED, selectedUrls)
 
             startActivity(intent)
         }
@@ -124,11 +126,46 @@ class SearchFragment : Fragment(), ISearchView, IItemClickListener {
 
     override fun clearSearch() {
         searchViewModel.clearSearch()
+
+        actionMode?.finish()
     }
 
-    override fun onImageClickedListener(imageViewModel: ImageViewModel, position: Int) {
+    override fun onItemClicked(imageViewModel: ImageViewModel, position: Int) {
+        if (actionMode != null) {
+            toggleSelection(imageViewModel, position)
+        } else {
+            // TODO: navigate to single item
+        }
+    }
+
+    override fun onItemLongClicked(imageViewModel: ImageViewModel, position: Int) {
+        if (actionMode == null) {
+            if (activity is MainActivity) {
+                actionMode = (activity as MainActivity).startSupportActionMode(actionModeCallback)
+            }
+        }
+
+        toggleSelection(imageViewModel, position)
+    }
+
+    private fun toggleSelection(imageViewModel: ImageViewModel, position: Int) {
         imageAdapter.toggleSelection(imageViewModel, position)
 
+        actionMode?.let {
+            val count: Int = imageAdapter.getSelectedItemCount()
+
+            if (count == 0) {
+                it.finish()
+            } else {
+                it.title = String.format("%d items selected", count)
+                it.invalidate()
+
+                updateValidationButtonState()
+            }
+        }
+    }
+
+    private fun updateValidationButtonState() {
         // At least 2 selected items
         if (imageAdapter.getSelectedItemCount() > 1) {
             validationButton.visibility = View.VISIBLE
@@ -140,5 +177,27 @@ class SearchFragment : Fragment(), ISearchView, IItemClickListener {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    inner class SelectionActionModeCallback : ActionMode.Callback {
+
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            return false
+        }
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+            return false
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            imageAdapter.clearSelection()
+            actionMode = null
+
+            updateValidationButtonState()
+        }
     }
 }

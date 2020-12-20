@@ -5,7 +5,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.pghaz.withingstest.R
 import com.pghaz.withingstest.imaging.ImageLoader
-import com.pghaz.withingstest.viewmodel.ImageViewModel
+import com.pghaz.withingstest.domain.internal.ImageViewModel
 
 class ImageViewHolder(itemView: View, private var listener: IItemClickListener) :
     RecyclerView.ViewHolder(itemView) {
@@ -16,7 +16,12 @@ class ImageViewHolder(itemView: View, private var listener: IItemClickListener) 
 
     fun bind(imageViewModel: ImageViewModel, selected: Boolean) {
         itemView.setOnClickListener {
-            listener.onImageClickedListener(imageViewModel, adapterPosition)
+            listener.onItemClicked(imageViewModel, adapterPosition)
+        }
+
+        itemView.setOnLongClickListener {
+            listener.onItemLongClicked(imageViewModel, adapterPosition)
+            return@setOnLongClickListener true
         }
 
         ImageLoader.get().load(imageViewModel.imageUrl)

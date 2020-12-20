@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pghaz.withingstest.domain.Hit
 import com.pghaz.withingstest.domain.PixabayResult
+import com.pghaz.withingstest.domain.internal.ImageViewModel
 import com.pghaz.withingstest.network.RestClient
 import retrofit2.Call
 import retrofit2.Callback

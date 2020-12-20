@@ -6,18 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import com.pghaz.withingstest.domain.internal.ImageViewModel
 import com.pghaz.withingstest.imaging.ImageLoader
 import com.pghaz.withingstest.utils.Arguments
 
 class ScreenSlidePageFragment : Fragment() {
 
-    private lateinit var imageUrl: String
+    private lateinit var model: ImageViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            imageUrl = it.getString(Arguments.ARGS_URL).toString()
+            model = it.getParcelable(Arguments.ARGS_MODEL)!!
         }
     }
 
@@ -32,15 +33,15 @@ class ScreenSlidePageFragment : Fragment() {
 
         val imageView = view.findViewById<ImageView>(R.id.imageView)
 
-        ImageLoader.get().load(imageUrl).into(imageView)
+        ImageLoader.get().load(model.imageUrl).into(imageView)
     }
 
     companion object {
-        fun newInstance(id: String): ScreenSlidePageFragment {
+        fun newInstance(model: ImageViewModel): ScreenSlidePageFragment {
             val fragment = ScreenSlidePageFragment()
 
             val args = Bundle()
-            args.putString(Arguments.ARGS_URL, id)
+            args.putParcelable(Arguments.ARGS_MODEL, model)
 
             fragment.arguments = args
 
