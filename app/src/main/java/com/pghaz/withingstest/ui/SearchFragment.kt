@@ -67,6 +67,8 @@ class SearchFragment : Fragment(), ISearchView, IItemClickListener {
         searchViewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
         searchViewModel.hitsLiveData.observe(this, { hits ->
             imageAdapter.submitList(hits)
+
+            handlePlaceholder(hits.size)
         })
 
         searchViewModel.errorLiveData.observe(this, {
@@ -77,6 +79,16 @@ class SearchFragment : Fragment(), ISearchView, IItemClickListener {
 
     private fun initImageAdapter(): ImageAdapter {
         return ImageAdapter(this)
+    }
+
+    private fun handlePlaceholder(size: Int) {
+        if (size == 0) {
+            binding.recyclerView.visibility = View.GONE
+            binding.placeholder.visibility = View.VISIBLE
+        } else {
+            binding.recyclerView.visibility = View.VISIBLE
+            binding.placeholder.visibility = View.GONE
+        }
     }
 
     private fun configureRecyclerView(
