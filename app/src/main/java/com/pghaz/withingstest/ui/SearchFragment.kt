@@ -130,11 +130,17 @@ class SearchFragment : Fragment(), ISearchView, IItemClickListener {
         actionMode?.finish()
     }
 
+    private fun navigateToDetailsActivity(imageViewModel: ImageViewModel) {
+        val intent = Intent(context, DetailsActivity::class.java)
+        intent.putExtra(Arguments.ARGS_MODEL, imageViewModel)
+        startActivity(intent)
+    }
+
     override fun onItemClicked(imageViewModel: ImageViewModel, position: Int) {
         if (actionMode != null) {
             toggleSelection(imageViewModel, position)
         } else {
-            // TODO: navigate to single item
+            navigateToDetailsActivity(imageViewModel)
         }
     }
 
