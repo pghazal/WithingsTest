@@ -3,6 +3,7 @@ package com.pghaz.withingstest.ui
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -66,6 +67,11 @@ class SearchFragment : Fragment(), ISearchView, IItemClickListener {
         searchViewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
         searchViewModel.hitsLiveData.observe(this, { hits ->
             imageAdapter.submitList(hits)
+        })
+
+        searchViewModel.errorLiveData.observe(this, {
+            val textError = it.message
+            Toast.makeText(context, textError, Toast.LENGTH_SHORT).show()
         })
     }
 

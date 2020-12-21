@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.pghaz.withingstest.domain.Hit
 import com.pghaz.withingstest.domain.PixabayResult
 import com.pghaz.withingstest.domain.internal.ImageViewModel
+import com.pghaz.withingstest.network.ErrorException
 import com.pghaz.withingstest.network.RestClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,6 +16,7 @@ class SearchViewModel : ViewModel() {
     private val pixabayService = RestClient.createPixabayServiceClient()
 
     val hitsLiveData = MutableLiveData<List<ImageViewModel>>()
+    val errorLiveData = MutableLiveData<Throwable>()
 
     fun searchImages(query: String?) {
         val call = pixabayService.searchImages(query)
@@ -31,14 +33,16 @@ class SearchViewModel : ViewModel() {
                         }
 
                         hitsLiveData.value = imageViewModels
+                    } ?: kotlin.run {
+                        onFailure(call, ErrorException(response.errorBody()?.string()))
                     }
                 } else {
-                    // TODO: call onFailure()
+                    onFailure(call, ErrorException(response.errorBody()?.string()))
                 }
             }
 
             override fun onFailure(call: Call<PixabayResult>, t: Throwable) {
-                // TODO: handle error case
+                errorLiveData.value = t
             }
         })
     }
