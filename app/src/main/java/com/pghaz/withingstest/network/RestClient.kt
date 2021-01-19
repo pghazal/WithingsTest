@@ -4,6 +4,7 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
@@ -17,6 +18,7 @@ object RestClient {
         val retrofit = Retrofit.Builder()
             .client(createHttpClient(PIXABAY_API_KEY))
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .baseUrl(PIXABAY_URL_API)
             .build()
 

@@ -3,25 +3,49 @@ package com.pghaz.withingstest.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pghaz.withingstest.domain.Hit
-import com.pghaz.withingstest.domain.PixabayResult
 import com.pghaz.withingstest.domain.internal.ImageViewModel
-import com.pghaz.withingstest.network.ErrorException
 import com.pghaz.withingstest.network.RestClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
 class SearchViewModel : ViewModel() {
 
     private val pixabayService = RestClient.createPixabayServiceClient()
 
+    private val compositeDisposable: CompositeDisposable by lazy {
+        CompositeDisposable()
+    }
+
     val hitsLiveData = MutableLiveData<List<ImageViewModel>>()
     val errorLiveData = MutableLiveData<Throwable>()
 
     fun searchImages(query: String?) {
-        val call = pixabayService.searchImages(query)
+        val searchImageObservable = pixabayService.searchImages(query)
 
-        call.enqueue(object : Callback<PixabayResult> {
+        val searchDisposable = searchImageObservable
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .map {
+                val imageViewModels = ArrayList<ImageViewModel>()
+
+                it.hits.let { hits ->
+                    hits.forEach { hit ->
+                        val imageViewModel = transform(hit)
+                        imageViewModels.add(imageViewModel)
+                    }
+                }
+
+                return@map imageViewModels
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                hitsLiveData.value = it
+            }
+
+        compositeDisposable.add(searchDisposable)
+
+        /*call.enqueue(object : Callback<PixabayResult> {
             override fun onResponse(call: Call<PixabayResult>, response: Response<PixabayResult>) {
                 if (response.isSuccessful) {
                     response.body()?.hits?.let { hits ->
@@ -44,7 +68,7 @@ class SearchViewModel : ViewModel() {
             override fun onFailure(call: Call<PixabayResult>, t: Throwable) {
                 errorLiveData.value = t
             }
-        })
+        })*/
     }
 
     private fun transform(hit: Hit): ImageViewModel {
